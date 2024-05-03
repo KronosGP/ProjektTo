@@ -1,10 +1,8 @@
 package com.example.ProjektTO.TableOperation;
 
-import com.example.ProjektTO.Enums;
 import com.example.ProjektTO.Table.FieldClass;
 import com.example.ProjektTO.Table.TableClass;
 
-import static com.example.ProjektTO.Enums.eFieldType;
 
 public class CreateTable {
     public String getString(TableClass newTable){
@@ -18,7 +16,10 @@ public class CreateTable {
             if(i>0)
                 respone+=",\n";
             respone+=f.getFieldName()+" "
-                    +f.getFieldType().toString();
+                    +f.getFieldType().toString()
+                    +(f.isNotNUll()?" NOT NULL":"")
+                    +(f.isAutoincrement()?" AUTO_INCREMENT":"")
+                    +(f.isUnique()?" UNIQUE":"");
 
             switch (f.getFieldType()){
                 case DECIMAL -> respone+="("+f.getFieldSize1()+","+f.getFieldSize2()+")";
@@ -28,9 +29,8 @@ public class CreateTable {
             if(f.isPrimeryKey())
                 PKconst+=",\nPRIMARY KEY ("+f.getFieldName()+")";
             if(f.isForeignKey())
-                FKconst+=",\nCONSTRAINT FK_"+f.getFieldType()+
-                            " FOREIGN KEY ("+f.getFieldName()+")"+
-                        "REFERENCES TABELA(POLE)";//fieldtype należy zamienić na tabele do połączenia
+                FKconst+=",\nFOREIGN KEY ("+f.getFieldName()+")"+
+                        "REFERENCES "+f.getForeignTable()+"("+f.getForeignField()+")"+"";//fieldtype należy zamienić na tabele do połączenia
             if(f.isUnique())
                 UNIconst+=",\nUNIQUE ("+f.getFieldName()+")";
         }

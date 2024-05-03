@@ -95,9 +95,9 @@ public class test {
                     for (Enums.eFieldType f:Enums.eFieldType.values()) {
                         System.out.println(f.ordinal()+" "+f.toString());
                     };
-                    System.out.println("Podaj typ pola");
+                    /*System.out.println("Podaj typ pola");
                     field.setFieldType(myObj.nextInt());
-                    myObj.nextLine();
+                    myObj.nextLine();*/
 
                     System.out.println("Podaj pierwszy rozmiar");
                     field.setFieldSize1(myObj.nextInt());

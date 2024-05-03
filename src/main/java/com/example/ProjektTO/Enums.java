@@ -2,7 +2,7 @@ package com.example.ProjektTO;
 
 public class Enums {
     public enum eFieldType{
-        INTIGER,
+        INTEGER,
         DECIMAL,
         DATA,
         TIMESTAMP,
