@@ -5,10 +5,13 @@ import com.example.ProjektTO.Enums;
 import com.example.ProjektTO.Service.DatabaseService;
 import com.example.ProjektTO.Table.TableClass;
 import com.example.ProjektTO.TableOperation.CreateTable;
+import com.example.ProjektTO.TableOperation.EditTable;
 import com.fasterxml.jackson.annotation.JsonClassDescription;
 import com.fasterxml.jackson.databind.jsonFormatVisitors.JsonAnyFormatVisitor;
 import com.mysql.cj.xdevapi.JsonArray;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +22,7 @@ import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/db")
+@CrossOrigin(origins = "http://localhost:3000")
 public class DataBaseController {
     DatabaseService databaseService;
 
@@ -29,7 +33,7 @@ public class DataBaseController {
     @PostMapping("/connect")
     public ResponseEntity<String> connectToDatabase(@RequestBody DatabaseConnectionParams params) {
         //System.out.println(params.getIp());
-        return databaseService.connect(params)?ResponseEntity.ok("Udało się połączyć"):ResponseEntity.ok("Nie udało się połączyć");
+        return databaseService.connect(params)?ResponseEntity.ok("Udało się połączyć"):ResponseEntity.status(HttpStatus.BAD_REQUEST.value()).body("ERROR");
 
     }
     @PostMapping("/disconnect")
@@ -75,6 +79,12 @@ public class DataBaseController {
     public ResponseEntity<String> newTable(@RequestBody TableClass table) {
         System.out.println(table.getFields().get(0).getFieldName());
         String Respone=new CreateTable().getString(table);
+        return ResponseEntity.ok(Respone);
+    }
+    @PostMapping("/edittable")
+    public ResponseEntity<String> editTable(@RequestBody TableClass table) {
+        System.out.println(table.getFields().get(0).getFieldName());
+        String Respone=new EditTable().getString(table);
         return ResponseEntity.ok(Respone);
     }
 }

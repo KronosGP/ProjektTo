@@ -27,11 +27,13 @@ public class FieldClass {
 
     @JsonProperty("isUnique")
     private boolean Unique=false;
+    @JsonProperty("editMode")
+    private int edit=1;
 
     public FieldClass() {
     }
 
-    public FieldClass(String fieldName, int fieldSize1, int fieldSize2, String fieldType, String foreignField, String foreignTable, boolean isAutoincrement, boolean isForeignKey, boolean isNotNUll, boolean isPrimeryKey, boolean unique) {
+    public FieldClass(String fieldName, int fieldSize1, int fieldSize2, String fieldType, String foreignField, String foreignTable, boolean isAutoincrement, boolean isForeignKey, boolean isNotNUll, boolean isPrimeryKey, boolean unique, int edit) {
         FieldName = fieldName;
         FieldSize1 = fieldSize1;
         FieldSize2 = fieldSize2;
@@ -43,6 +45,7 @@ public class FieldClass {
         IsNotNUll = isNotNUll;
         IsPrimeryKey = isPrimeryKey;
         Unique = unique;
+        this.edit=edit;
     }
 
     public void setFieldType(String fieldType) {
@@ -137,7 +140,35 @@ public class FieldClass {
         FieldName = fieldName;
     }
 
-    /*public void setFieldType(int nextInt) {
+    public int getEdit() {
+        return edit;
+    }
+
+    public void setEdit(int edit) {
+        this.edit = edit;
+    }
+/*public void setFieldType(int nextInt) {
         FieldType=Enums.eFieldType.values()[nextInt].name();
     }*/
+
+    public String getPrimeryInfo(){
+        String respone=getFieldName()+" "
+                +getFieldType().toString();
+
+        switch (getFieldType()){
+            case DECIMAL -> respone+="("+getFieldSize1()+","+getFieldSize2()+")";
+            case VARCHAR -> respone+="("+getFieldSize1()+")";
+        }
+        return respone;
+    }
+    public String getSpecyficInfo(){
+        String respone=(isNotNUll()?"NOT NULL ":"")
+                +(isAutoincrement()?"AUTO_INCREMENT ":"")
+                +(isUnique()?"UNIQUE ":"");
+        return respone;
+    }
+
+    public String getForeignInfo() {
+        return getFieldName()+" FOREIGN KEY ("+getFieldName()+") REFERENCES "+getForeignTable()+"("+getForeignField()+")";
+    }
 }

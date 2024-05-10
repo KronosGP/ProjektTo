@@ -16,15 +16,15 @@ public class CreateTable {
             if(i>0)
                 respone+=",\n";
             respone+=f.getFieldName()+" "
-                    +f.getFieldType().toString()
-                    +(f.isNotNUll()?" NOT NULL":"")
-                    +(f.isAutoincrement()?" AUTO_INCREMENT":"")
-                    +(f.isUnique()?" UNIQUE":"");
+                    +f.getFieldType().toString();
 
             switch (f.getFieldType()){
                 case DECIMAL -> respone+="("+f.getFieldSize1()+","+f.getFieldSize2()+")";
                 case VARCHAR -> respone+="("+f.getFieldSize1()+")";
             }
+            respone+=(f.isNotNUll()?" NOT NULL":"")
+                    +(f.isAutoincrement()?" AUTO_INCREMENT":"")
+                    +(f.isUnique()?" UNIQUE":"");
 
             if(f.isPrimeryKey())
                 PKconst+=",\nPRIMARY KEY ("+f.getFieldName()+")";

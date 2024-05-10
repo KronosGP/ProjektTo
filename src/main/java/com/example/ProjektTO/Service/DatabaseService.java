@@ -21,7 +21,7 @@ public class DatabaseService {
             Connection connection = DriverManager.getConnection(url, username, password);
             return true;
         } catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             return false;
         }
     }
