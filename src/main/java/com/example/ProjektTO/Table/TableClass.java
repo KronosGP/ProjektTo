@@ -1,5 +1,6 @@
 package com.example.ProjektTO.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.ArrayList;
@@ -19,14 +20,18 @@ public class TableClass {
     public TableClass(String TableName){
         this.TableName=TableName;
     }
+
+
     public void addField(FieldClass Field){
         Fields.add(Field);
     }
 
+    @JsonIgnore
     public String getTableName() {
         return TableName;
     }
 
+    @JsonIgnore
     public List<FieldClass> getFields(){
         return Fields;
     }

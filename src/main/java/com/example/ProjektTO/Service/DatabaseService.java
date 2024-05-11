@@ -54,20 +54,23 @@ public class DatabaseService {
         TableClass Table = new TableClass(tableName);
         DatabaseMetaData metaData = connection.getMetaData();
         ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
-        List<String> primaryKeys = (List<String>) metaData.getPrimaryKeys(null, null, tableName).getArray("COLUMN_NAME");
-        List<String> foreignKeys = (List<String>) metaData.getImportedKeys(null, null, tableName).getArray("COLUMN_NAME");
-        List<String> indexes = (List<String>) metaData.getIndexInfo(null, null, tableName, true, false).getArray("COLUMN_NAME");
+        ResultSet foreignKeys = metaData.getImportedKeys(null, null, tableName);
         while (resultSet.next()) {
             FieldClass columnInfo = new FieldClass();
             columnInfo.setFieldName(resultSet.getString("COLUMN_NAME"));
-            //columnInfo.setFieldType(Enums.eFieldType.valueOf(resultSet.getString("TYPE_NAME")));
+            columnInfo.setFieldType(resultSet.getString("TYPE_NAME"));
             columnInfo.setFieldSize1(resultSet.getInt("COLUMN_SIZE"));
-            if(primaryKeys.contains(columnInfo.getFieldName()))
-                columnInfo.setPrimeryKey(true);
-            if(foreignKeys.contains(columnInfo.getFieldName()))
+            columnInfo.setFieldSize1(resultSet.getInt("DECIMAL_DIGITS"));
+            columnInfo.setAutoincrement( resultSet.getBoolean("IS_AUTOINCREMENT"));
+            columnInfo.setNotNUll( resultSet.getInt("NULLABLE") == DatabaseMetaData.columnNoNulls);
+            columnInfo.setPrimeryKey( resultSet.getBoolean("PRIMARY_KEY"));
+            columnInfo.setUnique( resultSet.getBoolean("UNIQUE"));
+            if(resultSet.getString("COLUMN_NAME").compareTo(foreignKeys.getString("FKCOLUMN_NAME"))==0){
+                columnInfo.setForeignTable(foreignKeys.getString("PKTABLE_NAME"));
+                columnInfo.setForeignField(foreignKeys.getString("PKCOLUMN_NAME"));
                 columnInfo.setForeignKey(true);
-            if(indexes.contains(columnInfo.getFieldName()))
-                columnInfo.setUnique(true);
+            }
+            columnInfo.setEdit(0);
             Table.addField(columnInfo);
         }
         return Table;

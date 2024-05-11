@@ -20,7 +20,7 @@ public class CreateTable {
 
             switch (f.getFieldType()){
                 case DECIMAL -> respone+="("+f.getFieldSize1()+","+f.getFieldSize2()+")";
-                case VARCHAR -> respone+="("+f.getFieldSize1()+")";
+                case VARCHAR, CHAR -> respone+="("+f.getFieldSize1()+")";
             }
             respone+=(f.isNotNUll()?" NOT NULL":"")
                     +(f.isAutoincrement()?" AUTO_INCREMENT":"")

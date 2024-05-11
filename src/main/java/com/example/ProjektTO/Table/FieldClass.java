@@ -1,6 +1,7 @@
 package com.example.ProjektTO.Table;
 
 import com.example.ProjektTO.Enums;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class FieldClass {
@@ -52,6 +53,7 @@ public class FieldClass {
         FieldType = fieldType;
     }
 
+    @JsonIgnore
     public String getForeignField() {
         return foreignField;
     }
@@ -60,6 +62,7 @@ public class FieldClass {
         this.foreignField = foreignField;
     }
 
+    @JsonIgnore
     public String getForeignTable() {
         return foreignTable;
     }
@@ -67,7 +70,7 @@ public class FieldClass {
     public void setForeignTable(String foreignTable) {
         this.foreignTable = foreignTable;
     }
-
+    @JsonIgnore
     public boolean isAutoincrement() {
         return IsAutoincrement;
     }
@@ -76,6 +79,7 @@ public class FieldClass {
         IsAutoincrement = autoincrement;
     }
 
+    @JsonIgnore
     public boolean isNotNUll() {
         return IsNotNUll;
     }
@@ -84,6 +88,7 @@ public class FieldClass {
         IsNotNUll = notNUll;
     }
 
+    @JsonIgnore
     public boolean isPrimeryKey() {
         return IsPrimeryKey;
     }
@@ -92,6 +97,7 @@ public class FieldClass {
         IsPrimeryKey = primeryKey;
     }
 
+    @JsonIgnore
     public boolean isForeignKey() {
         return IsForeignKey;
     }
@@ -100,6 +106,7 @@ public class FieldClass {
         IsForeignKey = foreignKey;
     }
 
+    @JsonIgnore
     public boolean isUnique() {
         return Unique;
     }
@@ -116,6 +123,7 @@ public class FieldClass {
         FieldType = fieldType.name();
     }*/
 
+    @JsonIgnore
     public int getFieldSize1() {
         return FieldSize1;
     }
@@ -124,6 +132,7 @@ public class FieldClass {
         FieldSize1 = fieldSize1;
     }
 
+    @JsonIgnore
     public int getFieldSize2() {
         return FieldSize2;
     }
@@ -132,6 +141,7 @@ public class FieldClass {
         FieldSize2 = fieldSize2;
     }
 
+    @JsonIgnore
     public String getFieldName() {
         return FieldName;
     }
@@ -140,6 +150,7 @@ public class FieldClass {
         FieldName = fieldName;
     }
 
+    @JsonIgnore
     public int getEdit() {
         return edit;
     }
@@ -150,17 +161,18 @@ public class FieldClass {
 /*public void setFieldType(int nextInt) {
         FieldType=Enums.eFieldType.values()[nextInt].name();
     }*/
-
+@JsonIgnore
     public String getPrimeryInfo(){
         String respone=getFieldName()+" "
                 +getFieldType().toString();
 
         switch (getFieldType()){
             case DECIMAL -> respone+="("+getFieldSize1()+","+getFieldSize2()+")";
-            case VARCHAR -> respone+="("+getFieldSize1()+")";
+            case VARCHAR, CHAR -> respone+="("+getFieldSize1()+")";
         }
         return respone;
     }
+    @JsonIgnore
     public String getSpecyficInfo(){
         String respone=(isNotNUll()?"NOT NULL ":"")
                 +(isAutoincrement()?"AUTO_INCREMENT ":"")
@@ -168,6 +180,7 @@ public class FieldClass {
         return respone;
     }
 
+    @JsonIgnore
     public String getForeignInfo() {
         return getFieldName()+" FOREIGN KEY ("+getFieldName()+") REFERENCES "+getForeignTable()+"("+getForeignField()+")";
     }

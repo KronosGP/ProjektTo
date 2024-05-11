@@ -3,9 +3,15 @@ package com.example.ProjektTO;
 public class Enums {
     public enum eFieldType{
         INTEGER,
+        BOOL,
+        FLOAT,
+        DOUBLE,
         DECIMAL,
-        DATA,
+        DATE,
+        DATETIME,
         TIMESTAMP,
+        TIME,
+        CHAR,
         VARCHAR
     }
 }

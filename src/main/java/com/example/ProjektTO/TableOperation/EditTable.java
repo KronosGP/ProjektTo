@@ -18,9 +18,13 @@ public class EditTable {
                 case 2:respone+=!first?",\n":"";first=false;
                         respone+="modify column "+field.getPrimeryInfo()+" "+(field.isPrimeryKey()?"PRIMARY KEY ":"")+field.getSpecyficInfo();
                         FKconst+=(field.isForeignKey()? ",\nADD CONSTRAINT "+table.getTableName()+"_"+field.getForeignInfo() : "");break;
-                case 3:respone+=!first?",\n":"";
+                case 3:respone+=!first?",\n":"";first=false;
                         respone+="drop column "+field.getFieldName();break;
             }
+        }
+        if(first) {//jeśli nic nie jest zmieniane w tabeli nic nie rób
+            respone="";
+            FKconst="";
         }
         return respone+" "+FKconst;
     }
