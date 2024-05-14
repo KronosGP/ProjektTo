@@ -19,10 +19,10 @@ public class InsertClass extends OperationClass{
 
     @Override
     public String toString() {
-        String returnetString="Insert into "+getTableName();
+        String returnetString="Insert into "+getTableName()+" (";
         if(!getSetStatemant().isEmpty())
             returnetString+=getSetString();
-        returnetString+=" values("+getColumnValues()+");";
+        returnetString+=") values("+getColumnValues()+");";
         return returnetString;
     }
 

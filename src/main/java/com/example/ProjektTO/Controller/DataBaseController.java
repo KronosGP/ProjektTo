@@ -1,6 +1,7 @@
 package com.example.ProjektTO.Controller;
 
 import com.example.ProjektTO.DataBase.DatabaseConnectionParams;
+import com.example.ProjektTO.DataOperations.InsertClass;
 import com.example.ProjektTO.Enums;
 import com.example.ProjektTO.Service.DatabaseService;
 import com.example.ProjektTO.Table.FieldClass;
@@ -14,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -88,10 +91,12 @@ public class DataBaseController {
         return (databaseService.select(sql))?ResponseEntity.ok("Udało się"):ResponseEntity.ok("Nie udało się");
     }
     @PostMapping("/newtable")
-    public ResponseEntity<String> newTable(@RequestBody TableClass table) {
+    public ResponseEntity<Map<String,String>> newTable(@RequestBody TableClass table) {
+        Map<String, String> data = new HashMap<>();
         System.out.println(table.getFields().get(0).getFieldName());
         String Respone=new CreateTable().getString(table);
-        return ResponseEntity.ok(Respone);
+        data.put("response",Respone);
+        return ResponseEntity.ok(data);
     }
     @PatchMapping("/edittable")
     public ResponseEntity<String> editTable(@RequestBody TableClass table) {
@@ -104,5 +109,11 @@ public class DataBaseController {
     public ResponseEntity<String> deleteTable(@RequestBody String table){
         String Respone=new DropTable().getString(table.replace("\"","\'"));
         return ResponseEntity.ok(Respone);
+    }
+
+    @PostMapping("insert")
+    public ResponseEntity<Map<String,String>> insert(@RequestBody InsertClass ins)
+    {
+        return null;
     }
 }
