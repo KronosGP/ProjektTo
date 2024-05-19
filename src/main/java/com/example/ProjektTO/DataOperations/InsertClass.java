@@ -1,12 +1,21 @@
 package com.example.ProjektTO.DataOperations;
 
+import com.example.ProjektTO.Statemant.SetStatemant;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class InsertClass extends OperationClass{
 
+    public InsertClass(@JsonProperty("tableName") String tableName,@JsonProperty("columns") List<SetStatemant> set) {
+        this.setTableName(tableName);
+        this.setSetStatemant(set);
+    }
 
-    public InsertClass() {
+    public InsertClass(OperationClass operation) {
+        this.setTableName(operation.getTableName());
+        this.setSetStatemant(operation.getSetStatemant());
     }
     public String getSetString() {
         String returnetString="(";
@@ -19,10 +28,10 @@ public class InsertClass extends OperationClass{
 
     @Override
     public String toString() {
-        String returnetString="Insert into "+getTableName()+" (";
+        String returnetString="Insert into "+getTableName()+" ";
         if(!getSetStatemant().isEmpty())
             returnetString+=getSetString();
-        returnetString+=") values("+getColumnValues()+");";
+        returnetString+=" values("+getColumnValues()+");";
         return returnetString;
     }
 

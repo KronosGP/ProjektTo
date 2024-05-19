@@ -1,9 +1,18 @@
 package com.example.ProjektTO.Statemant;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Statemant {
+
+
     private String columnName;
-    private Object value;
+
+
+    private String value="";
+
     private String sign;
+
 
     public String getColumnName() {
         return columnName;
@@ -18,7 +27,7 @@ public class Statemant {
     }
 
     public void setValue(Object value) {
-        this.value = value;
+        this.value = value.toString();
     }
 
     public String getSign() {

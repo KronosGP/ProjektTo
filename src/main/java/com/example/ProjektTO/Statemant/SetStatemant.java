@@ -1,7 +1,10 @@
 package com.example.ProjektTO.Statemant;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class SetStatemant extends Statemant {
-    public SetStatemant(String columnName, Object value) {
+    public SetStatemant(@JsonProperty("columnName") String columnName, @JsonAlias({"columnValue","value"}) Object value) {
         super();
         setColumnName(columnName);
         setValue(value);

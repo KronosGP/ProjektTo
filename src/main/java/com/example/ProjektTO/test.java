@@ -55,13 +55,13 @@ public class test {
                 select2.addWhere("maina", ">", select);
                 System.out.println(select2.toString());
                 break;
-            case 4:
+           /* case 4:
                 InsertClass insert = new InsertClass();
                 insert.setTableName("asd");
                 insert.addSet("qwerty",22);
                 insert.addSet("qwerty2",2);
                 System.out.println(insert.toString());
-                break;
+                break;*/
             case 5:
                 DeleteClass delete = new DeleteClass();
                 delete.setTableName("asd");
@@ -70,7 +70,7 @@ public class test {
                 delete.addWhere("maina2", "<", "0");
                 System.out.println(delete.toString());
                 break;
-            case 6:
+            /*case 6:
                 UpdateClass update = new UpdateClass();
                 update.setTableName("asd");
                 update.addSet("zxc", 22);
@@ -78,7 +78,7 @@ public class test {
                 update.addWhereConn("or");
                 update.addWhere("maina2", "<",22);
                 System.out.println(update.toString());
-                break;
+                break;*/
             case 7:
                 System.out.println("Podaj nazwe tabeli");
                 myObj.nextLine();

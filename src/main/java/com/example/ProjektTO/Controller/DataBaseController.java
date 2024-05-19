@@ -1,7 +1,10 @@
 package com.example.ProjektTO.Controller;
 
 import com.example.ProjektTO.DataBase.DatabaseConnectionParams;
+import com.example.ProjektTO.DataOperations.DeleteClass;
 import com.example.ProjektTO.DataOperations.InsertClass;
+import com.example.ProjektTO.DataOperations.OperationClass;
+import com.example.ProjektTO.DataOperations.UpdateClass;
 import com.example.ProjektTO.Enums;
 import com.example.ProjektTO.Service.DatabaseService;
 import com.example.ProjektTO.Table.FieldClass;
@@ -9,6 +12,7 @@ import com.example.ProjektTO.Table.TableClass;
 import com.example.ProjektTO.TableOperation.CreateTable;
 import com.example.ProjektTO.TableOperation.DropTable;
 import com.example.ProjektTO.TableOperation.EditTable;
+import jdk.dynalink.Operation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -106,14 +110,37 @@ public class DataBaseController {
     }
 
     @DeleteMapping("/deltable")
-    public ResponseEntity<String> deleteTable(@RequestBody String table){
+    public ResponseEntity<Map<String,String>> deleteTable(@RequestBody String table){
         String Respone=new DropTable().getString(table.replace("\"","\'"));
-        return ResponseEntity.ok(Respone);
+        Map<String, String> data = new HashMap<>();
+        data.put("response",Respone);
+        return ResponseEntity.ok(data);
     }
 
-    @PostMapping("insert")
+    @PostMapping("/insert")
     public ResponseEntity<Map<String,String>> insert(@RequestBody InsertClass ins)
     {
-        return null;
+        Map<String, String> data = new HashMap<>();
+        String Respone=ins.toString();
+        data.put("response",Respone);
+        return ResponseEntity.ok(data);
+    }
+
+    @PostMapping("/update")
+    public ResponseEntity<Map<String,String>> update(@RequestBody UpdateClass upd)
+    {
+        Map<String, String> data = new HashMap<>();
+        String Respone=upd.toString();
+        data.put("response",Respone);
+        return ResponseEntity.ok(data);
+    }
+
+    @PostMapping("/delrows")
+    public ResponseEntity<Map<String,String>> delrows(@RequestBody DeleteClass del){
+
+        Map<String, String> data = new HashMap<>();
+        String Respone=del.toString();
+        data.put("response",Respone);
+        return ResponseEntity.ok(data);
     }
 }
