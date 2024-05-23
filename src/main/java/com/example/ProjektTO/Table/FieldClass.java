@@ -50,6 +50,7 @@ public class FieldClass {
     }
 
     public void setFieldType(String fieldType) {
+        if(fieldType.equals("INT")) fieldType="INTEGER";
         FieldType = fieldType;
     }
 

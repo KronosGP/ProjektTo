@@ -3,6 +3,7 @@ package com.example.ProjektTO.Service;
 import com.example.ProjektTO.DataBase.DatabaseConnectionParams;
 import com.example.ProjektTO.Table.FieldClass;
 import com.example.ProjektTO.Table.TableClass;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
@@ -11,26 +12,42 @@ import java.util.List;
 
 @Service
 public class DatabaseService {
+
+    DatabaseConnectionParams params;
     private Connection connection;
     public boolean connect(DatabaseConnectionParams params) {
-        String url = "jdbc:mysql://" + params.getIp() + ":" + params.getPort();
+        this.params=params;
+        String url = "jdbc:mysql://" + params.getIp() + ":" + params.getPort()+"/"+params.getName();
+        System.out.println(url);
         String username = params.getUsername();
         String password = params.getPassword();
         try {
             // Utworzenie połączenia z bazą danych
-            Connection connection = DriverManager.getConnection(url, username, password);
+            connection = DriverManager.getConnection(url, username, password);
             return true;
         } catch (SQLException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
             return false;
         }
     }
 
     public boolean select(String sql) {
         try {
-            connection.nativeSQL(sql);
+            /*String url = "jdbc:mysql://" + params.getIp() + ":" + params.getPort()+"/"+params.getName();
+            System.out.println(url);
+            String username = params.getUsername();
+            String password = params.getPassword();
+            Connection connection = DriverManager.getConnection(url, username, password);*/
+            Statement stmt = connection.createStatement();
+                // Wykonaj zapytanie SQL
+                System.out.println(stmt.isClosed());
+                stmt.execute("use "+params.getName()+";");
+                sql=sql.replace("\\n","");
+                System.out.println(sql);
+                stmt.execute(sql+";");
             return true;
         } catch (SQLException e) {
+            System.out.println(e);
             return false;
         }
     }
@@ -40,7 +57,7 @@ public class DatabaseService {
         DatabaseMetaData metaData = null;
         try {
             metaData = connection.getMetaData();
-            ResultSet resultSet = metaData.getTables(null, null, "%", new String[]{"TABLE"});
+            ResultSet resultSet = metaData.getTables(params.getName(), null, "%", new String[]{"TABLE"});
             while (resultSet.next()) {
                 String tableName = resultSet.getString("TABLE_NAME");
                 tableNames.add(tableName);}
@@ -55,6 +72,8 @@ public class DatabaseService {
         DatabaseMetaData metaData = connection.getMetaData();
         ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
         ResultSet foreignKeys = metaData.getImportedKeys(null, null, tableName);
+        ResultSet primaryKeys = metaData.getPrimaryKeys(null, null, tableName);
+        ResultSet unique = metaData.getIndexInfo(null, null, tableName,true,false);
         while (resultSet.next()) {
             FieldClass columnInfo = new FieldClass();
             columnInfo.setFieldName(resultSet.getString("COLUMN_NAME"));
@@ -63,12 +82,27 @@ public class DatabaseService {
             columnInfo.setFieldSize1(resultSet.getInt("DECIMAL_DIGITS"));
             columnInfo.setAutoincrement( resultSet.getBoolean("IS_AUTOINCREMENT"));
             columnInfo.setNotNUll( resultSet.getInt("NULLABLE") == DatabaseMetaData.columnNoNulls);
-            columnInfo.setPrimeryKey( resultSet.getBoolean("PRIMARY_KEY"));
-            columnInfo.setUnique( resultSet.getBoolean("UNIQUE"));
-            if(resultSet.getString("COLUMN_NAME").compareTo(foreignKeys.getString("FKCOLUMN_NAME"))==0){
-                columnInfo.setForeignTable(foreignKeys.getString("PKTABLE_NAME"));
-                columnInfo.setForeignField(foreignKeys.getString("PKCOLUMN_NAME"));
-                columnInfo.setForeignKey(true);
+            //columnInfo.setPrimeryKey( resultSet.getBoolean("IS_PRIMARY_KEY"));
+            //columnInfo.setUnique( resultSet.getBoolean("IS_UNIQUE"));
+            while (foreignKeys.next()) {
+                String foreignColumnName = foreignKeys.getString("FKCOLUMN_NAME");
+                if (columnInfo.getFieldName().equals(foreignColumnName)) {
+                    columnInfo.setForeignTable(foreignKeys.getString("PKTABLE_NAME"));
+                    columnInfo.setForeignField(foreignKeys.getString("PKCOLUMN_NAME"));
+                    columnInfo.setForeignKey(true);
+                }
+            }
+            while (primaryKeys.next()) {
+                String primaryColumnName = primaryKeys.getString("COLUMN_NAME");
+                if (columnInfo.getFieldName().equals(primaryColumnName)) {
+                    columnInfo.setPrimeryKey(true);
+                }
+            }
+            while (unique.next()) {
+                String uniqueColumnName = unique.getString("COLUMN_NAME");
+                if (columnInfo.getFieldName().equals(uniqueColumnName)) {
+                    columnInfo.setUnique(true);
+                }
             }
             columnInfo.setEdit(0);
             Table.addField(columnInfo);

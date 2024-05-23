@@ -27,7 +27,7 @@ import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/db")
-@CrossOrigin(origins = "http://localhost:3000")
+//@CrossOrigin(origins = "http://localhost:3000")
 public class DataBaseController {
     DatabaseService databaseService;
 
@@ -49,15 +49,15 @@ public class DataBaseController {
 
     @GetMapping("/tables")
     public ResponseEntity<List<TableClass>> GetTables() throws SQLException {
-        /*List<String> tableNames = /*List.of(new String[]{"asd", "cda"});*databaseService.getTableNames();
-        */List<TableClass> tableclass=new ArrayList<>();/*
+        List<String> tableNames = /*List.of(new String[]{"asd", "cda"});*/databaseService.getTableNames();
+        List<TableClass> tableclass=new ArrayList<>();
         for (String t: tableNames) {
              tableclass.add(databaseService.getTableColumns(t));
-        }*/
-        FieldClass f = new FieldClass("test",0,0,"integer","","",false,false,false,false,false,0);
-        List <FieldClass> ff =new ArrayList<FieldClass>();
-        ff.add(f);
-        tableclass.add(new TableClass("test", ff));
+        }
+        //FieldClass f = new FieldClass("test",0,0,"integer","","",false,false,false,false,false,0);
+        //List <FieldClass> ff =new ArrayList<FieldClass>();
+        //ff.add(f);
+        //tableclass.add(new TableClass("test", ff));
         return ResponseEntity.ok(tableclass);
     }
 
@@ -91,13 +91,14 @@ public class DataBaseController {
         return ResponseEntity.ok(fieldsType);
     }
     @PostMapping("/newsql")
-    public ResponseEntity<String> newSql(@RequestParam("sql") String sql) {
-        return (databaseService.select(sql))?ResponseEntity.ok("Udało się"):ResponseEntity.ok("Nie udało się");
+    public ResponseEntity<String> newSql(@RequestBody String sql) {
+        System.out.println(sql);
+        return (databaseService.select(sql.replace("\"","")))?ResponseEntity.ok("Udało się"):ResponseEntity.ok("Nie udało się");
     }
     @PostMapping("/newtable")
     public ResponseEntity<Map<String,String>> newTable(@RequestBody TableClass table) {
         Map<String, String> data = new HashMap<>();
-        System.out.println(table.getFields().get(0).getFieldName());
+        //System.out.println(table.getFields().get(0).getFieldName());
         String Respone=new CreateTable().getString(table);
         data.put("response",Respone);
         return ResponseEntity.ok(data);
@@ -111,8 +112,9 @@ public class DataBaseController {
 
     @DeleteMapping("/deltable")
     public ResponseEntity<Map<String,String>> deleteTable(@RequestBody String table){
-        String Respone=new DropTable().getString(table.replace("\"","\'"));
+        String Respone=new DropTable().getString(table.replace("\"",""));
         Map<String, String> data = new HashMap<>();
+        databaseService.select(Respone);
         data.put("response",Respone);
         return ResponseEntity.ok(data);
     }
@@ -131,6 +133,7 @@ public class DataBaseController {
     {
         Map<String, String> data = new HashMap<>();
         String Respone=upd.toString();
+        databaseService.select(Respone);
         data.put("response",Respone);
         return ResponseEntity.ok(data);
     }
