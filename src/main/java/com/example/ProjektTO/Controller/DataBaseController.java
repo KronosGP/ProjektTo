@@ -58,6 +58,7 @@ public class DataBaseController {
         //List <FieldClass> ff =new ArrayList<FieldClass>();
         //ff.add(f);
         //tableclass.add(new TableClass("test", ff));
+        System.out.println(tableclass.get(0).getTableName());
         return ResponseEntity.ok(tableclass);
     }
 

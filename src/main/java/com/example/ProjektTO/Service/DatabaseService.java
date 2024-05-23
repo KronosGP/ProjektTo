@@ -14,8 +14,9 @@ import java.util.List;
 public class DatabaseService {
 
     DatabaseConnectionParams params;
-    private Connection connection;
+    private Connection connection=null;
     public boolean connect(DatabaseConnectionParams params) {
+        if(connection!=null) disconnect();
         this.params=params;
         String url = "jdbc:mysql://" + params.getIp() + ":" + params.getPort()+"/"+params.getName();
         System.out.println(url);
