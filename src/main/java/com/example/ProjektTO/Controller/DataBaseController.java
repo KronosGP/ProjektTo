@@ -30,9 +30,26 @@ import java.util.stream.Stream;
 //@CrossOrigin(origins = "http://localhost:3000")
 public class DataBaseController {
     DatabaseService databaseService;
+    List<TableClass> tables;
 
     public DataBaseController(DatabaseService databaseService) {
         this.databaseService = databaseService;
+        tables=new ArrayList<>();
+        List<FieldClass> fields=new ArrayList<>();
+        FieldClass field=new FieldClass("ID",0,0,"INTEGER",null,null,true,false,true,true,true,0);
+        fields.add(field);
+        field=new FieldClass("Name",35,0,"VARCHAR",null,null,false,false,false,false,false,0);
+        fields.add(field);
+        tables.add(new TableClass("SCHOOL",fields));
+        fields=new ArrayList<>();
+        field=new FieldClass("ID",0,0,"INTEGER",null,null,true,false,true,true,true,0);
+        fields.add(field);
+        field=new FieldClass("Name",35,0,"VARCHAR",null,null,false,false,false,false,false,0);
+        fields.add(field);
+        field=new FieldClass("SCHOOLID",0,0,"INTEGER","ID","SCHOOL",false,true,false,false,false,0);
+        fields.add(field);
+        tables.add(new TableClass("PERSON",fields));
+
     }
 
     @PostMapping("/connect")
@@ -49,38 +66,54 @@ public class DataBaseController {
 
     @GetMapping("/tables")
     public ResponseEntity<List<TableClass>> GetTables() throws SQLException {
-        List<String> tableNames = /*List.of(new String[]{"asd", "cda"});*/databaseService.getTableNames();
+        /*List<String> tableNames = databaseService.getTableNames();
         List<TableClass> tableclass=new ArrayList<>();
         for (String t: tableNames) {
              tableclass.add(databaseService.getTableColumns(t));
-        }
+        }*/
+
+
         //FieldClass f = new FieldClass("test",0,0,"integer","","",false,false,false,false,false,0);
         //List <FieldClass> ff =new ArrayList<FieldClass>();
         //ff.add(f);
         //tableclass.add(new TableClass("test", ff));
-        System.out.println(tableclass.get(0).getTableName());
-        return ResponseEntity.ok(tableclass);
+        //System.out.println(tableclass.get(0).getTableName());
+        return ResponseEntity.ok(tables);//ResponseEntity.ok(tableclass);
     }
 
     @GetMapping("/tablesname")
     public ResponseEntity<List<String>> GetTablesName(){
-        List<String> tableNames = List.of(new String[]{"asd", "cda"});/*databaseService.getTableNames();*/
+
+        List<String> tableNames = List.of(new String[]{tables.get(0).getTableName(),tables.get(1).getTableName()});//databaseService.getTableNames();
         return ResponseEntity.ok(tableNames);
     }
     @GetMapping("/fieldsname")
     public ResponseEntity<List<String>> GetFieldName(@RequestParam("tablename") String TableName)  {
         try {
-            return ResponseEntity.ok(databaseService.getColumnsName(TableName));
-        } catch (SQLException e) {
+            List<String> FieldsName=new ArrayList<>();
+            for(TableClass t:tables){
+                if(t.getTableName().equals(TableName)){
+                    for(FieldClass f:t.getFields())
+                    {
+                        FieldsName.add(f.getFieldName());
+                    }
+                }
+            }
+            return ResponseEntity.ok(/*databaseService.getColumnsName(TableName)*/FieldsName);
+        } catch (Exception e) {
             return (ResponseEntity<List<String>>) ResponseEntity.notFound();
         }
     }
     @GetMapping("/fields")
     public ResponseEntity<TableClass> GetFields(@RequestParam("tablename") String TableName) {
         try {
-            TableClass table = databaseService.getTableColumns(TableName);
+            TableClass table = null;
+            for(TableClass t:tables){
+                if(t.getTableName().equals(TableName))
+                    table=t;
+            }
             return ResponseEntity.ok(table);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             return (ResponseEntity<TableClass>) ResponseEntity.notFound();
         }
     }
@@ -108,6 +141,7 @@ public class DataBaseController {
     public ResponseEntity<String> editTable(@RequestBody TableClass table) {
         System.out.println(table.getFields().get(0).getFieldName());
         String Respone=new EditTable().getString(table);
+        //databaseService.select(Respone);
         return ResponseEntity.ok(Respone);
     }
 
@@ -115,7 +149,7 @@ public class DataBaseController {
     public ResponseEntity<Map<String,String>> deleteTable(@RequestBody String table){
         String Respone=new DropTable().getString(table.replace("\"",""));
         Map<String, String> data = new HashMap<>();
-        databaseService.select(Respone);
+        //databaseService.select(Respone);
         data.put("response",Respone);
         return ResponseEntity.ok(data);
     }
@@ -134,7 +168,7 @@ public class DataBaseController {
     {
         Map<String, String> data = new HashMap<>();
         String Respone=upd.toString();
-        databaseService.select(Respone);
+        //databaseService.select(Respone);
         data.put("response",Respone);
         return ResponseEntity.ok(data);
     }

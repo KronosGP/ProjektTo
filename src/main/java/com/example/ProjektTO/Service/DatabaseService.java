@@ -72,13 +72,14 @@ public class DatabaseService {
         TableClass Table = new TableClass(tableName);
         DatabaseMetaData metaData = connection.getMetaData();
         ResultSet resultSet = metaData.getColumns(null, null, tableName, null);
-        ResultSet foreignKeys = metaData.getImportedKeys(null, null, tableName);
-        ResultSet primaryKeys = metaData.getPrimaryKeys(null, null, tableName);
-        ResultSet unique = metaData.getIndexInfo(null, null, tableName,true,false);
         while (resultSet.next()) {
+            ResultSet foreignKeys = metaData.getImportedKeys(null, null, tableName);
+            ResultSet primaryKeys =metaData.getPrimaryKeys(null, null, tableName);
+            ResultSet unique = metaData.getIndexInfo(null, null, tableName,true,false);
             FieldClass columnInfo = new FieldClass();
             columnInfo.setFieldName(resultSet.getString("COLUMN_NAME"));
             columnInfo.setFieldType(resultSet.getString("TYPE_NAME"));
+            //System.out.println(columnInfo.getFieldType());
             columnInfo.setFieldSize1(resultSet.getInt("COLUMN_SIZE"));
             columnInfo.setFieldSize1(resultSet.getInt("DECIMAL_DIGITS"));
             columnInfo.setAutoincrement( resultSet.getBoolean("IS_AUTOINCREMENT"));
@@ -87,6 +88,7 @@ public class DatabaseService {
             //columnInfo.setUnique( resultSet.getBoolean("IS_UNIQUE"));
             while (foreignKeys.next()) {
                 String foreignColumnName = foreignKeys.getString("FKCOLUMN_NAME");
+                //System.out.println(Table.getTableName()+" "+columnInfo.getFieldName()+" "+foreignColumnName);
                 if (columnInfo.getFieldName().equals(foreignColumnName)) {
                     columnInfo.setForeignTable(foreignKeys.getString("PKTABLE_NAME"));
                     columnInfo.setForeignField(foreignKeys.getString("PKCOLUMN_NAME"));
@@ -105,8 +107,10 @@ public class DatabaseService {
                     columnInfo.setUnique(true);
                 }
             }
+            //System.out.println(Table.getTableName()+" "+columnInfo.getFieldName()+" "+columnInfo.isForeignKey()+" "+columnInfo.getForeignTable()+" "+columnInfo.getForeignField());
             columnInfo.setEdit(0);
             Table.addField(columnInfo);
+            columnInfo=null;
         }
         return Table;
     }
