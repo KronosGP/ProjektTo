@@ -20,7 +20,8 @@ public class InsertClass extends OperationClass{
     public String getSetString() {
         String returnetString="(";
         for (int i = 0; i < getSetStatemant().size() - 1; i++) {
-            returnetString += getSetStatemant().get(i).getColumnName() + ", ";
+            if(getSetStatemant().get(i).getValue()!="")
+                returnetString += getSetStatemant().get(i).getColumnName() + ", ";
         }
         returnetString += getSetStatemant().get(getSetStatemant().size() - 1).getColumnName()+")";
         return returnetString;
@@ -38,8 +39,21 @@ public class InsertClass extends OperationClass{
     private String getColumnValues() {
         String returnetString="";
         for(int i=0;i<getSetStatemant().size()-1;i++)
-            returnetString += getSetStatemant().get(i).getValue() + ", ";
-        returnetString += getSetStatemant().get(getSetStatemant().size()-1).getValue();
+            if(getSetStatemant().get(i).getValue()!="")
+                try{
+                    Double.parseDouble((String) getSetStatemant().get(i).getValue());
+                    returnetString += getSetStatemant().get(i).getValue() + ", ";
+                }catch (Exception e) {
+                    returnetString += "'"+getSetStatemant().get(i).getValue() + "', ";
+                    System.out.println(getSetStatemant().get(i).getValue());
+                }
+        try{
+            Double.parseDouble((String) getSetStatemant().get(getSetStatemant().size()-1).getValue());
+            returnetString += getSetStatemant().get(getSetStatemant().size()-1).getValue();
+        }catch (Exception e) {
+            returnetString += "'"+getSetStatemant().get(getSetStatemant().size()-1).getValue() + "'";
+            System.out.println(getSetStatemant().get(getSetStatemant().size()-1).getValue());
+        }
         return returnetString;
     }
 

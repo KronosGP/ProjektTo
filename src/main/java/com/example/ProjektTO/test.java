@@ -25,7 +25,7 @@ public class test {
         Object test="asd";
         //System.out.println(test.getClass().getSimpleName());
         SelectClass select;
-        switch (myObj.nextInt()) {
+       /* switch (myObj.nextInt()) {
             case 1:
                 select = new SelectClass();
                 select.setTableName("asd");
@@ -62,14 +62,14 @@ public class test {
                 insert.addSet("qwerty2",2);
                 System.out.println(insert.toString());
                 break;*/
-            case 5:
+            /*case 5:
                 DeleteClass delete = new DeleteClass();
                 delete.setTableName("asd");
                 delete.addWhere("maina", ">", "3");
                 delete.addWhereConn("and");
                 delete.addWhere("maina2", "<", "0");
                 System.out.println(delete.toString());
-                break;
+                break;*/
             /*case 6:
                 UpdateClass update = new UpdateClass();
                 update.setTableName("asd");
@@ -78,7 +78,7 @@ public class test {
                 update.addWhereConn("or");
                 update.addWhere("maina2", "<",22);
                 System.out.println(update.toString());
-                break;*/
+                break;*//*
             case 7:
                 System.out.println("Podaj nazwe tabeli");
                 myObj.nextLine();
@@ -98,7 +98,7 @@ public class test {
                     /*System.out.println("Podaj typ pola");
                     field.setFieldType(myObj.nextInt());
                     myObj.nextLine();*/
-
+/*
                     System.out.println("Podaj pierwszy rozmiar");
                     field.setFieldSize1(myObj.nextInt());
                     myObj.nextLine();
@@ -127,6 +127,6 @@ public class test {
                 CreateTable newTable=new CreateTable();
                 System.out.println(newTable.getString(tableClass));
                 break;
-        }
+        }*/
     }
 }

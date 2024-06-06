@@ -37,6 +37,9 @@ public class OperationClass {
     protected void addColumn(String nazwa){
         this.columnName.add(nazwa);
     }
+    protected void addColumns(List<String> nazwa){
+        this.columnName=nazwa;
+    }
 
     public void addWhereConn(String conn){
         this.whereConn.add(conn);
@@ -59,14 +62,26 @@ public class OperationClass {
         if(!whereStatemant.isEmpty()) {
             returnetString = " where ";
             for (int i = 0; i < whereStatemant.size() - 1; i++)
-                returnetString += whereStatemant.get(i).toString() + " "+whereConn.get(i)+" ";
-            returnetString += whereStatemant.get(whereStatemant.size() - 1).toString();
+                try{
+                    Double.parseDouble((String) getWhereStatemant().get(i).getValue());
+                    returnetString += getWhereStatemant().get(i).getColumnName() + getWhereStatemant().get(i).getSign()+getWhereStatemant().get(i).getValue();
+                }catch (Exception e) {
+                    returnetString += getWhereStatemant().get(i).getColumnName() + getWhereStatemant().get(i).getSign()+"'"+getWhereStatemant().get(i).getValue() + "', ";
+                    System.out.println(getWhereStatemant().get(i).getValue());
+                }
+            try{
+                Double.parseDouble((String) getWhereStatemant().get(getWhereStatemant().size()-1).getValue());
+                returnetString += getWhereStatemant().get(getWhereStatemant().size()-1).getColumnName() + getWhereStatemant().get(getWhereStatemant().size()-1).getSign()+getWhereStatemant().get(getWhereStatemant().size()-1).getValue();
+            }catch (Exception e) {
+                returnetString += getWhereStatemant().get(getWhereStatemant().size()-1).getColumnName() + getWhereStatemant().get(getWhereStatemant().size()-1).getSign()+"'"+getWhereStatemant().get(getWhereStatemant().size()-1).getValue() + "'";
+                System.out.println(getWhereStatemant().get(getWhereStatemant().size()-1).getValue());
+            }
         }
         return returnetString;
     }
 
     public String getSetString() {
-        String returnetString="set ";
+        String returnetString=" set ";
         for (int i = 0; i < setStatemant.size() - 1; i++)
             returnetString += setStatemant.get(i).toString() + ", ";
         returnetString += setStatemant.get(setStatemant.size() - 1).toString();

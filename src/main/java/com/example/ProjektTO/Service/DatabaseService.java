@@ -1,14 +1,20 @@
 package com.example.ProjektTO.Service;
 
 import com.example.ProjektTO.DataBase.DatabaseConnectionParams;
+import com.example.ProjektTO.Dtos.ExequteResponse;
 import com.example.ProjektTO.Table.FieldClass;
 import com.example.ProjektTO.Table.TableClass;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class DatabaseService {
@@ -32,7 +38,7 @@ public class DatabaseService {
         }
     }
 
-    public boolean select(String sql) {
+    public ResponseEntity<ExequteResponse>  select(String sql) {
         try {
             /*String url = "jdbc:mysql://" + params.getIp() + ":" + params.getPort()+"/"+params.getName();
             System.out.println(url);
@@ -41,15 +47,35 @@ public class DatabaseService {
             Connection connection = DriverManager.getConnection(url, username, password);*/
             Statement stmt = connection.createStatement();
                 // Wykonaj zapytanie SQL
-                System.out.println(stmt.isClosed());
                 stmt.execute("use "+params.getName()+";");
                 sql=sql.replace("\\n","");
-                System.out.println(sql);
-                stmt.execute(sql+";");
-            return true;
+                List<Map<String,String>>rows=new ArrayList<>();
+                Map<String,String>row=new HashMap<>();
+                if(sql.trim().toLowerCase().startsWith("select")){
+                    ResultSet s=stmt.executeQuery(sql+";");
+                    ResultSetMetaData md = s.getMetaData();
+                    while (s.next()) {
+                        row=new HashMap<>();
+                        for(int i=1;i<=md.getColumnCount();i++) {
+                            row.put(md.getColumnName(i), s.getString(i));
+                        }
+                        rows.add(row);
+                    }
+                }
+                else{
+                    stmt.execute(sql);
+                    row.put("not","select");
+                    rows.add(row);
+                }
+
+            return ResponseEntity.ok(new ExequteResponse(true,rows));
         } catch (SQLException e) {
             System.out.println(e);
-            return false;
+            Map<String,String>res = new HashMap<>();
+            res.put("statusText",e.toString());
+            List<Map<String,String>> rpp=new ArrayList<>();
+            rpp.add(res);
+            return ResponseEntity.ok(new ExequteResponse(false, rpp));
         }
     }
 

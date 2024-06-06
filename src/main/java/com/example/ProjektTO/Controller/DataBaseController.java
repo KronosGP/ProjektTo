@@ -1,10 +1,8 @@
 package com.example.ProjektTO.Controller;
 
 import com.example.ProjektTO.DataBase.DatabaseConnectionParams;
-import com.example.ProjektTO.DataOperations.DeleteClass;
-import com.example.ProjektTO.DataOperations.InsertClass;
-import com.example.ProjektTO.DataOperations.OperationClass;
-import com.example.ProjektTO.DataOperations.UpdateClass;
+import com.example.ProjektTO.DataOperations.*;
+import com.example.ProjektTO.Dtos.ExequteResponse;
 import com.example.ProjektTO.Enums;
 import com.example.ProjektTO.Service.DatabaseService;
 import com.example.ProjektTO.Table.FieldClass;
@@ -66,11 +64,11 @@ public class DataBaseController {
 
     @GetMapping("/tables")
     public ResponseEntity<List<TableClass>> GetTables() throws SQLException {
-        /*List<String> tableNames = databaseService.getTableNames();
+        List<String> tableNames = databaseService.getTableNames();
         List<TableClass> tableclass=new ArrayList<>();
         for (String t: tableNames) {
              tableclass.add(databaseService.getTableColumns(t));
-        }*/
+        }
 
 
         //FieldClass f = new FieldClass("test",0,0,"integer","","",false,false,false,false,false,0);
@@ -78,13 +76,13 @@ public class DataBaseController {
         //ff.add(f);
         //tableclass.add(new TableClass("test", ff));
         //System.out.println(tableclass.get(0).getTableName());
-        return ResponseEntity.ok(tables);//ResponseEntity.ok(tableclass);
+        return /*ResponseEntity.ok(tables);*/ResponseEntity.ok(tableclass);
     }
 
     @GetMapping("/tablesname")
     public ResponseEntity<List<String>> GetTablesName(){
 
-        List<String> tableNames = List.of(new String[]{tables.get(0).getTableName(),tables.get(1).getTableName()});//databaseService.getTableNames();
+        List<String> tableNames = /*List.of(new String[]{tables.get(0).getTableName(),tables.get(1).getTableName()});*/databaseService.getTableNames();
         return ResponseEntity.ok(tableNames);
     }
     @GetMapping("/fieldsname")
@@ -99,7 +97,7 @@ public class DataBaseController {
                     }
                 }
             }
-            return ResponseEntity.ok(/*databaseService.getColumnsName(TableName)*/FieldsName);
+            return ResponseEntity.ok(databaseService.getColumnsName(TableName)/*FieldsName*/);
         } catch (Exception e) {
             return (ResponseEntity<List<String>>) ResponseEntity.notFound();
         }
@@ -107,11 +105,11 @@ public class DataBaseController {
     @GetMapping("/fields")
     public ResponseEntity<TableClass> GetFields(@RequestParam("tablename") String TableName) {
         try {
-            TableClass table = null;
-            for(TableClass t:tables){
+            TableClass table = /*null;*/databaseService.getTableColumns(TableName);
+            /*for(TableClass t:tables){
                 if(t.getTableName().equals(TableName))
                     table=t;
-            }
+            }*/
             return ResponseEntity.ok(table);
         } catch (Exception e) {
             return (ResponseEntity<TableClass>) ResponseEntity.notFound();
@@ -125,9 +123,9 @@ public class DataBaseController {
         return ResponseEntity.ok(fieldsType);
     }
     @PostMapping("/newsql")
-    public ResponseEntity<String> newSql(@RequestBody String sql) {
+    public ResponseEntity<ExequteResponse> newSql(@RequestBody String sql) {
         System.out.println(sql);
-        return (databaseService.select(sql.replace("\"","")))?ResponseEntity.ok("Udało się"):ResponseEntity.ok("Nie udało się");
+        return (databaseService.select(sql.replace("\"","")));
     }
     @PostMapping("/newtable")
     public ResponseEntity<Map<String,String>> newTable(@RequestBody TableClass table) {
@@ -138,18 +136,20 @@ public class DataBaseController {
         return ResponseEntity.ok(data);
     }
     @PatchMapping("/edittable")
-    public ResponseEntity<String> editTable(@RequestBody TableClass table) {
+    public ResponseEntity<Map<String,String>> editTable(@RequestBody TableClass table) {
         System.out.println(table.getFields().get(0).getFieldName());
+        Map<String, String> data = new HashMap<>();
         String Respone=new EditTable().getString(table);
-        //databaseService.select(Respone);
-        return ResponseEntity.ok(Respone);
+        data.put("response",Respone);
+        databaseService.select(Respone);
+        return ResponseEntity.ok(data);
     }
 
     @DeleteMapping("/deltable")
     public ResponseEntity<Map<String,String>> deleteTable(@RequestBody String table){
         String Respone=new DropTable().getString(table.replace("\"",""));
         Map<String, String> data = new HashMap<>();
-        //databaseService.select(Respone);
+        databaseService.select(Respone);
         data.put("response",Respone);
         return ResponseEntity.ok(data);
     }
@@ -178,6 +178,15 @@ public class DataBaseController {
 
         Map<String, String> data = new HashMap<>();
         String Respone=del.toString();
+        data.put("response",Respone);
+        return ResponseEntity.ok(data);
+    }
+
+    @PostMapping("/select")
+    public ResponseEntity<Map<String,String>> select(@RequestBody SelectClass sel){
+
+        Map<String, String> data = new HashMap<>();
+        String Respone=sel.toString();
         data.put("response",Respone);
         return ResponseEntity.ok(data);
     }
