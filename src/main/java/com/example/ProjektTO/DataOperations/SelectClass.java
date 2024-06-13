@@ -59,7 +59,7 @@ public class SelectClass extends OperationClass{
             returnetString+= join.toString()+"";
         }
         returnetString+=(!getWhereString().isEmpty())?getWhereString():"";
-        returnetString+=!orderby.equals("none")?"order by "+orderbyColumn+" "+orderby:"";
+        returnetString+=!orderby.equals("none")?" order by "+orderbyColumn+" "+orderby:"";
         returnetString+=" limit "+limit;
         return returnetString;
     }

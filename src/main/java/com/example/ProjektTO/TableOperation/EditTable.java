@@ -14,7 +14,7 @@ public class EditTable {
                 case 0:break;
                 case 1:respone+=!first?",\n":"";first=false;
                         respone+="add column "+field.getPrimeryInfo()+" "+(field.isPrimeryKey()?"PRIMARY KEY ":"")+field.getSpecyficInfo();
-                        FKconst+=(field.isForeignKey()? "\nADD CONSTRAINT "+table.getTableName()+"_"+field.getForeignInfo() : "");break;
+                        FKconst+=(field.isForeignKey()? ",\nADD CONSTRAINT "+table.getTableName()+"_"+field.getForeignInfo() : "");break;
                 case 2:respone+=!first?",\n":"";first=false;
                         respone+="modify column "+field.getPrimeryInfo()+" "+(field.isPrimeryKey()?"PRIMARY KEY ":"")+field.getSpecyficInfo();
                         FKconst+=(field.isForeignKey()? ",\nADD CONSTRAINT "+table.getTableName()+"_"+field.getForeignInfo() : "");break;
@@ -24,8 +24,8 @@ public class EditTable {
         }
         if(first) {//jeśli nic nie jest zmieniane w tabeli nic nie rób
             respone="";
-            FKconst="";
         }
+        System.out.println(respone+" "+FKconst);
         return respone+" "+FKconst;
     }
 }

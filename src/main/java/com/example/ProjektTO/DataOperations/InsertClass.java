@@ -44,14 +44,14 @@ public class InsertClass extends OperationClass{
                     Double.parseDouble((String) getSetStatemant().get(i).getValue());
                     returnetString += getSetStatemant().get(i).getValue() + ", ";
                 }catch (Exception e) {
-                    returnetString += "'"+getSetStatemant().get(i).getValue() + "', ";
+                    returnetString += getSetStatemant().get(i).getValue()!=""?"'"+getSetStatemant().get(i).getValue() + "', ":"";
                     System.out.println(getSetStatemant().get(i).getValue());
                 }
         try{
             Double.parseDouble((String) getSetStatemant().get(getSetStatemant().size()-1).getValue());
             returnetString += getSetStatemant().get(getSetStatemant().size()-1).getValue();
         }catch (Exception e) {
-            returnetString += "'"+getSetStatemant().get(getSetStatemant().size()-1).getValue() + "'";
+            returnetString += getSetStatemant().get(getSetStatemant().size()-1).getValue()!=""?"'"+getSetStatemant().get(getSetStatemant().size()-1).getValue() + "'":"";
             System.out.println(getSetStatemant().get(getSetStatemant().size()-1).getValue());
         }
         return returnetString;

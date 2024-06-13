@@ -125,7 +125,7 @@ public class DataBaseController {
     @PostMapping("/newsql")
     public ResponseEntity<ExequteResponse> newSql(@RequestBody String sql) {
         System.out.println(sql);
-        return (databaseService.select(sql.replace("\"","")));
+        return (databaseService.execute(sql.replace("\"","")));
     }
     @PostMapping("/newtable")
     public ResponseEntity<Map<String,String>> newTable(@RequestBody TableClass table) {
@@ -141,17 +141,17 @@ public class DataBaseController {
         Map<String, String> data = new HashMap<>();
         String Respone=new EditTable().getString(table);
         data.put("response",Respone);
-        databaseService.select(Respone);
+        databaseService.execute(Respone);
         return ResponseEntity.ok(data);
     }
 
     @DeleteMapping("/deltable")
-    public ResponseEntity<Map<String,String>> deleteTable(@RequestBody String table){
+    public ResponseEntity<ExequteResponse> deleteTable(@RequestBody Map<String, String> payload){
+        String table = payload.get("tableName");
         String Respone=new DropTable().getString(table.replace("\"",""));
         Map<String, String> data = new HashMap<>();
-        databaseService.select(Respone);
-        data.put("response",Respone);
-        return ResponseEntity.ok(data);
+        System.out.println(Respone);
+        return databaseService.execute(Respone);
     }
 
     @PostMapping("/insert")

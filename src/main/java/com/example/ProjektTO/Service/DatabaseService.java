@@ -38,15 +38,9 @@ public class DatabaseService {
         }
     }
 
-    public ResponseEntity<ExequteResponse>  select(String sql) {
+    public ResponseEntity<ExequteResponse>  execute(String sql) {
         try {
-            /*String url = "jdbc:mysql://" + params.getIp() + ":" + params.getPort()+"/"+params.getName();
-            System.out.println(url);
-            String username = params.getUsername();
-            String password = params.getPassword();
-            Connection connection = DriverManager.getConnection(url, username, password);*/
             Statement stmt = connection.createStatement();
-                // Wykonaj zapytanie SQL
                 stmt.execute("use "+params.getName()+";");
                 sql=sql.replace("\\n","");
                 List<Map<String,String>>rows=new ArrayList<>();
